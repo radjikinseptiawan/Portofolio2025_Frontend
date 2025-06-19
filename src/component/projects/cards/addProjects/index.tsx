@@ -9,7 +9,7 @@ export default function AddCards() {
 <div onClick={()=>setOpen(true)} className={` ${open ? "brightness-50 hover:translate-x-0 cursor-disabled transition-none hover:cursor-not-allowed z-0" : "hover:cursor-pointer hover:translate-x-8 transition-all"} rounded-xl shadow-2xl w-80 md:w-xl text-black m-2 bg-slate-900 p-8`}>
     <div className='rounded-xl  flex-col justify-center flex items-center align-center w-full md:w-full border-8 p-4 border-slate-950 h-full'>
         <h1 className='text-9xl font-bold '>+</h1>
-        <p className='text-3xl font-bold'>Tap For edit the project section</p>
+        <p className='text-3xl font-bold'>Tap For add the project</p>
     </div>
 </div>
  {open && <OpenCardBench/>}
