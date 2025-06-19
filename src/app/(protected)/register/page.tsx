@@ -1,17 +1,25 @@
 "use client";
-import { useState } from "react";
-import "../globals.css";
+import { useEffect, useState } from "react";
+import "../../globals.css";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const [email,setEmail] = useState<string | undefined>(undefined)
   const [password,setPassword] = useState<string | undefined>(undefined)
-
-
+  const [phone,setPhone] = useState<string | undefined>(undefined)
+  const [username,setUsername] = useState<string |undefined>(undefined)
+  const route = useRouter()
+  useEffect(()=>{
+   const checkToken = localStorage.getItem("token")
+    if(!checkToken){
+        route.replace("/")
+    }
+  },[])
   const iAmAdmin = async (e : React.FormEvent)=>{
     e.preventDefault()
     try{
 const response = await fetch('http://localhost:3006/login',{method : 'POST',
-   body : JSON.stringify({email,password}),
+   body : JSON.stringify({email,password,phone,username}),
    headers :{'Content-Type' : 'application/json',   Authorization: `Bearer ${localStorage.getItem("token")}`},
 
 })
@@ -28,6 +36,8 @@ const response = await fetch('http://localhost:3006/login',{method : 'POST',
     }
   }
 
+  
+
   return (
     <div className="flex justify-center items-center h-screen bg-slate-800">
       <div className="bg-white rounded-2xl shadow-lg p-6 w-80">
@@ -42,7 +52,7 @@ const response = await fetch('http://localhost:3006/login',{method : 'POST',
             type="text"
             placeholder="Username"
             className="p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-slate-500"
-            onChange={(e)=>setEmail(e.target.value)}
+            onChange={(e)=>setUsername(e.target.value)}
           />
           <input
             type="password"
@@ -50,6 +60,18 @@ const response = await fetch('http://localhost:3006/login',{method : 'POST',
             className="p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-slate-500"
             onChange={(e)=>setPassword(e.target.value)}
          />
+         <input
+            type="number"
+            placeholder="phone"
+            className="p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-slate-500"
+            onChange={(e)=>setPhone(e.target.value)}
+         />
+         <input 
+          type="email"
+          placeholder="phone"
+          className="p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-slate-500"
+          onChange={(e)=>setEmail(e.target.value)} />
+         
           <button
             type="submit"
             className="bg-slate-700 hover:bg-slate-900 text-white font-semibold py-3 rounded-md transition-colors"

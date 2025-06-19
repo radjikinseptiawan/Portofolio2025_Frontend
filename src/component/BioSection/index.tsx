@@ -2,6 +2,8 @@
 /* eslint-disable @next/next/no-img-element */
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import '../../app/globals.css'
+import { useEditMode } from "@/context/editMode";
 
 interface socialMediaType{
   profile_link :string;
@@ -19,24 +21,25 @@ export default function BioSection() {
   const [user, setUser] = useState<UserData | null>(null);
   const [width,setWidth] = useState<number>(0)
   const [height,setHeight]= useState<number>(0)
+  const {editMode} = useEditMode()
+  const fetchingData = async ()=>{
+      try {
+        const response = await fetch('http://localhost:3006/',{method : "GET"})
+        const result = await response.json();
+        setUser(result.data[0]);
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
+      }
+    }; 
   
   
   useEffect(() => {
     const innerWidth = ()=>setWidth(window.innerWidth)
     const innerHeight = ()=>setHeight(window.innerHeight)
-    const fetchUser = async () => {
-      try {
-        const response = await fetch("http://localhost:3006");
-        const data = await response.json();
-        setUser(data[0]);
-      } catch (error) {
-        console.error("Failed to fetch user:", error);
-      }
-    };
     
     window.addEventListener("resize",innerWidth)
     window.addEventListener("resize",innerHeight)
-    fetchUser();
+    fetchingData();
 
     return ()=> {
       window.removeEventListener("resize",innerWidth)
@@ -45,15 +48,18 @@ export default function BioSection() {
     }, [width,height]);
 
   return (
-    <div className="flex items-center gap-6 p-6 justify-center md:justify-start border-b-2 border-white bg-slate-800">
+    <div className="bg-section flex items-center gap-6 p-6 justify-center md:justify-start border-b-2 border-white bg-slate-800">
       <div>
+        {
+          user &&
         <Image
-          src="https://i.pinimg.com/736x/23/9b/02/239b0228c8f3a6f2b4dbb5a864802d7d.jpg"
-          width={width < 600 ? 200 : 150}
-          height={height < 800 ? 200 : 150}
+          src={user?.profile_picture_url as string}
+          width={width < 600 ?  150 : 200}
+          height={height < 800 ? 75 : 90}
           alt="User Avatar"
-          className="bg-white transition hover:brightness-90 cursor-pointer p-1 rounded-full"
+          className={`bg-white transition hover:brightness-90 cursor-pointer p-1 rounded-full ${editMode ? "cursor-pointer bg-black/80 brightness-50" : ""}`}
         />
+      }
       </div>
 
       <div className="text-white">

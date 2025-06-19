@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navigation from "@/component/navigation";
+import { EditModeComponent } from "@/context/editMode";
+import { TokenGlobalState } from "@/context/token";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,8 +30,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <TokenGlobalState>
+        <EditModeComponent>
         <Navigation/>
         {children}
+        </EditModeComponent>
+        </TokenGlobalState>
       </body>
     </html>
   );
