@@ -4,6 +4,7 @@ import "./globals.css";
 import Navigation from "@/component/navigation";
 import { EditModeComponent } from "@/context/editMode";
 import { TokenGlobalState } from "@/context/token";
+import { OpenCardContext } from "@/context/addCards";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,10 +32,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <TokenGlobalState>
+         <OpenCardContext>
         <EditModeComponent>
         <Navigation/>
         {children}
         </EditModeComponent>
+        </OpenCardContext>
         </TokenGlobalState>
       </body>
     </html>

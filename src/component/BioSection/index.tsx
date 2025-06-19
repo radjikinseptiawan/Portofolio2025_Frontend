@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import '../../app/globals.css'
 import { useEditMode } from "@/context/editMode";
+import { useOpen } from "@/context/addCards";
 
 interface socialMediaType{
   profile_link :string;
@@ -22,6 +23,7 @@ export default function BioSection() {
   const [width,setWidth] = useState<number>(0)
   const [height,setHeight]= useState<number>(0)
   const {editMode} = useEditMode()
+  const {open} = useOpen()
   const fetchingData = async ()=>{
       try {
         const response = await fetch('http://localhost:3006/',{method : "GET"})
@@ -48,7 +50,7 @@ export default function BioSection() {
     }, [width,height]);
 
   return (
-    <div className="bg-section flex items-center gap-6 p-6 justify-center md:justify-start border-b-2 border-white bg-slate-800">
+    <div className={`bg-section ${open ? "brightness-50" : ""} bg-slate-800 flex items-center gap-6 p-6 justify-center md:justify-start border-b-2 border-white`}>
       <div>
         {
           user &&

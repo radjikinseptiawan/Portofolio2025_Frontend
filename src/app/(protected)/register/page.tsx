@@ -14,7 +14,7 @@ export default function Page() {
     if(!checkToken){
         route.replace("/")
     }
-  },[])
+  },[route])
   const iAmAdmin = async (e : React.FormEvent)=>{
     e.preventDefault()
     try{

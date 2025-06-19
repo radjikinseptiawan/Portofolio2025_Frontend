@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import React from 'react'
 import TechStack from './techStack'
+import { useOpen } from '@/context/addCards'
 
 type CardType = {
     title : string,
@@ -11,8 +12,9 @@ type CardType = {
 }
 
 export default function Cards({title,description,repoUrl,projectUrl,imageUrl} :CardType) {
-  return (
-<div className='rounded-xl shadow-2xl w-80 md:w-xl text-black m-2 bg-white p-8'>
+ const {open} = useOpen()
+ return (
+<div className={`rounded-xl shadow-2xl w-80 md:w-xl text-black m-2 bg-white p-8 ${open ? "brightness-50" : ""}`}>
             <h1 className='text-3xl font-bold m-2'>{title}</h1>
             <div className='border-t-2 p-2 text-center flex justify-center'>
                 <img src={imageUrl} width={350} height={350} alt="" />
