@@ -39,6 +39,7 @@ const response = await fetch('http://localhost:3006/login',{method : 'POST',
         </p>
         <form className="flex flex-col space-y-4" action={"/"}>
           <input
+            value={email?.toLowerCase()}
             type="text"
             placeholder="Username"
             className="p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-slate-500"
