@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import Cards from './cards'
 import { useRouter } from 'next/navigation'
 import { useOpen } from '@/context/addCards'
+import { useToken } from '@/context/token'
 
 type DataStack = {
     id : number,
@@ -22,13 +23,14 @@ type CardType = {
     image_url : string,
     project_url : string,
     repo_url : string,
+    created_at : string,
     tech_stack_project : techStack[]
 }
 
 export default function ShowCardsProjects() {
 const [projects,setProjects] = useState<CardType[]>([])  
 const {open} = useOpen()
-
+const {token} = useToken()
 
 const fetchingProjects = async ()=>{
     try{
@@ -47,7 +49,12 @@ useEffect(()=>{
 
  const route = useRouter()
  const deleteProject = async(id : string)=>{
-    const response = await fetch(`http://localhost:3006/projects/${id}`,{method:'DELETE'})
+    const response = await fetch(`http://localhost:3006/projects/${id}`,{
+        method:'DELETE',
+        headers : {
+            Authorization : `Bearer ${token}`
+        }
+    })
     setProjects((prev)=> prev.filter(p => p.id !== id))
     route.replace("/")
     return response
@@ -60,7 +67,7 @@ return (
             projects.map((item,index)=>{
                 return(
                     <div key={index++}>
-                    <Cards action={()=>deleteProject(item.id)} imageUrl={item.image_url !== '' ? item.image_url : `https://www.gynprog.com.br/wp-content/uploads/2017/06/wood-blog-placeholder.jpg`} repoUrl={item.repo_url} projectUrl={item.project_url} title={item.title} description={item.description}/>
+                    <Cards created_at={item.created_at} action={()=>deleteProject(item.id)} imageUrl={item.image_url !== '' ? item.image_url : `https://www.gynprog.com.br/wp-content/uploads/2017/06/wood-blog-placeholder.jpg`} repoUrl={item.repo_url} projectUrl={item.project_url} title={item.title} description={item.description}/>
                     <div className={`${open ? "brightness-50" : ""} flex gap-3 bg-white rounded-lg justify-center shadow-xl`}>
                     {item.tech_stack_project.map((item)=>{
                     return(
