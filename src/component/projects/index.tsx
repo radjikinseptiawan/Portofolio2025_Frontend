@@ -45,7 +45,7 @@ const fetchingProjects = async ()=>{
 
 useEffect(()=>{
     fetchingProjects()
-},[])
+},[projects])
 
  const route = useRouter()
  const deleteProject = async(id : string)=>{

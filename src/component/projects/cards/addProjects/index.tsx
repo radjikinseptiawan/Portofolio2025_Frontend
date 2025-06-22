@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { useOpen } from '@/context/addCards'
 import { useToken } from '@/context/token'
+import { useRouter } from 'next/navigation'
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 
 type DataStack = {
@@ -34,11 +35,18 @@ function OpenCardBench(){
   const {token} = useToken()
   const [stack,setStacks] = useState<DataStack[]>([])
   const [selectedStack,setSelectedStack] = useState<number[]>([])
-
+  const [image,setImage] = useState<File | null>(null)
+  const [url,setUrl] = useState<string>("")
 
   const getPhotos = ()=>{
     if(refid.current){
       return refid.current.click()
+    }
+  }
+
+  const handleImageChange = (e : ChangeEvent<HTMLInputElement>)=>{
+    if(e.target.files && e.target.files[0]){
+      setImage(e.target.files[0])
     }
   }
     
@@ -55,14 +63,20 @@ function OpenCardBench(){
     gettingStack()
   },[]) 
 
+  const route = useRouter()
   const addProject = async()=>{
     const response = await fetch(`http://localhost:3006/projects`,{
       method:'POST', 
       body : JSON.stringify({title,option,description,tech_stack_ids : selectedStack}),
       headers : {
-        Authorization : `Bearer ${token}` 
+        Authorization : `Bearer ${token}`,
+        'Content-Type' : 'application/json'
       }
     })
+    if(response){
+    setOpen(false)
+    route.replace("/")
+  }
     return response
   }
 
@@ -93,7 +107,7 @@ function OpenCardBench(){
         <input type="text" placeholder='Title' onChange={titleChange} className='border-2 text-3xl p-2 rounded-2xl' />
         
         <div onClick={getPhotos} className='flex flex-col pt-5 text-center items-center background-url my-3 w-full h-full bg-slate-800 rounded-2xl justify-center'>
-        <input ref={refid} type="file" className='border-2 text-3xl hidden rounded-2xl'/>
+        <input ref={refid} type="file" onChange={handleImageChange} className='border-2 text-3xl hidden rounded-2xl'/>
         <div className='text-center z-20'>
           <img src="/assets/image (1).svg" alt="" className='w-30' />
           <h1 className='font-bold text-xl text-slate-950 mb-10'>Add Photos</h1>
@@ -101,7 +115,7 @@ function OpenCardBench(){
         </div> 
         
         
-          <select name="" id=""  onChange={(e)=>optionSelect(e)} className='border-2 text-3xl p-2 rounded-2xl'>
+          <select name="" id=""  value={option}  onChange={(e)=>optionSelect(e)} className='border-2 text-3xl p-2 rounded-2xl'>
             <option value="undefined">....</option>
             {
               stack.map((item)=>{
