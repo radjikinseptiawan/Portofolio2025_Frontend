@@ -60,10 +60,11 @@ useEffect(()=>{
     return response
  }
 
+console.log( projects.length)
 
 return (
     <>
-        {
+        { projects.length != 0 ? 
             projects.map((item,index)=>{
                 return(
                     <div key={index++}>
@@ -80,6 +81,12 @@ return (
                     </div>
                 )
             })
+            :
+            <div className='flex w-96 items-center align-middle absolute justify-center'>
+            <h1 className='text-5xl text-gray-400 font-bold text-center'>
+                Project is empthy
+            </h1>
+            </div>
         } 
     </>
   )

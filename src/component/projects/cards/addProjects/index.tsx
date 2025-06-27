@@ -35,22 +35,46 @@ function OpenCardBench(){
   const {token} = useToken()
   const [stack,setStacks] = useState<DataStack[]>([])
   const [selectedStack,setSelectedStack] = useState<number[]>([])
-  const [image,setImage] = useState<File | null>(null)
+  const [file,setImage] = useState<File | null>(null)
   const [url,setUrl] = useState<string>("")
-
+  const [urlProject,setUrlProject] = useState<string>('')
+  const [urlRepo, setUrlRepo] = useState<string>("")
   const getPhotos = ()=>{
     if(refid.current){
-      return refid.current.click()
+      refid.current.click()
     }
   }
 
-  const handleImageChange = (e : ChangeEvent<HTMLInputElement>)=>{
-    if(e.target.files && e.target.files[0]){
-      setImage(e.target.files[0])
+  const handleImageChange = async (e : ChangeEvent<HTMLInputElement>)=>{
+    const selected = e.target.files?.[0]
+    if(selected){
+      setImage(selected)
+      setUrl(URL.createObjectURL(selected))
     }
   }
-    
   
+  const upImage = async ()=>{
+    const formData = new FormData()
+    formData.append("file",file as File)
+
+    try{
+      const response = await fetch('http://localhost:3006/projects/add_image',{
+        method : "POST",
+        body : formData
+      })
+      const data = await response.json()
+      
+      if(data.publicUrl){
+        setUrl(data.publicUrl)
+      }
+    }catch(error){
+      console.log(error)
+    }
+
+  }
+
+console.log(url)
+
    const gettingStack = async()=>{
       const response = await fetch('http://localhost:3006/projects/stack',{method : "GET"})
       const data = await response.json()
@@ -64,21 +88,41 @@ function OpenCardBench(){
   },[]) 
 
   const route = useRouter()
-  const addProject = async()=>{
-    const response = await fetch(`http://localhost:3006/projects`,{
-      method:'POST', 
-      body : JSON.stringify({title,option,description,tech_stack_ids : selectedStack}),
-      headers : {
-        Authorization : `Bearer ${token}`,
-        'Content-Type' : 'application/json'
+ const addProject = async () => {
+  try {
+
+    await upImage()
+    const response = await fetch("http://localhost:3006/projects", {
+      method: "POST",
+      body: JSON.stringify({
+        title,
+        option,
+        description,
+        repo_url : urlRepo,
+        image_url : url,
+        project_url : urlProject,
+        tech_stack_ids: selectedStack,
+      }),
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
       }
     })
-    if(response){
+
+    if (!response.ok) {
+      const errorRes = await response.json()
+      console.error("API error:", errorRes)
+      throw new Error("Gagal mengirim data ke server")
+    }
+
     setOpen(false)
     route.replace("/")
-  }
     return response
+  } catch (error) {
+    console.error("Terjadi error:", error)
   }
+}
+
 
   const optionSelect = (e : ChangeEvent<HTMLSelectElement>)=>{
     const selected = Number(e.target.value)
@@ -100,18 +144,15 @@ function OpenCardBench(){
     return
   }
 
+
   return(
     <>
-    <div className='bg-white shadow-2xl top-20 p-8 fixed mx-auto w-screen md:w-6xl h-3xl rounded-xl'>
+    <div className='bg-white shadow-2xl top-20 p-8 overflow-auto fixed mx-auto w-screen md:w-6xl h-3xl rounded-xl'>
       <div className='flex flex-col'>
         <input type="text" placeholder='Title' onChange={titleChange} className='border-2 text-3xl p-2 rounded-2xl' />
         
         <div onClick={getPhotos} className='flex flex-col pt-5 text-center items-center background-url my-3 w-full h-full bg-slate-800 rounded-2xl justify-center'>
-        <input ref={refid} type="file" onChange={handleImageChange} className='border-2 text-3xl hidden rounded-2xl'/>
-        <div className='text-center z-20'>
-          <img src="/assets/image (1).svg" alt="" className='w-30' />
-          <h1 className='font-bold text-xl text-slate-950 mb-10'>Add Photos</h1>
-        </div>
+        <input type="file" ref={refid} onChange={handleImageChange}/>
         </div> 
         
         
@@ -125,7 +166,9 @@ function OpenCardBench(){
               })
             }
             </select>
-      <input type="text" max={200} placeholder='Write something....' onChange={descriptionChange} className='border-2 my-2 text-3xl p-2 rounded-2xl'/>
+      <input type="text" maxLength={200} placeholder='Write something....' onChange={descriptionChange} className='border-2 my-2 text-3xl p-2 rounded-2xl'/>
+      <input type="text" placeholder='Repository Link....' onChange={(e)=>setUrlRepo(e.target.value)} className='border-2 my-2 text-3xl p-2 rounded-2xl'/>
+      <input type="text" placeholder='Project Link....' onChange={(e)=>setUrlProject(e.target.value)} className='border-2 my-2 text-3xl p-2 rounded-2xl'/>
       <div className='flex items-center'>
       <h1 className='my-2 font-bold text-xl'>Tech Stack :{selectedStack.join(", ")}</h1>
       </div>
