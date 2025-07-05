@@ -1,6 +1,5 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
-import Image from "next/image";
 import { useEffect, useReducer, useState } from "react";
 import '../../app/globals.css'
 import { useEditMode } from "@/context/editMode";
@@ -53,7 +52,6 @@ export default function BioSection() {
   const [width,setWidth] = useState<number>(0)
   const [height,setHeight]= useState<number>(0)
   const [state,dispatch] = useReducer(reducer,initialState)
-  
   const {editMode} = useEditMode()
   const {open} = useOpen()
 
