@@ -59,21 +59,19 @@ useEffect(()=>{
     route.replace("/")
     return response
  }
-
-console.log( projects.length)
-
 return (
     <>
         { projects.length != 0 ? 
             projects.map((item,index)=>{
+                if(!item.tech_stack_project) return null
                 return(
                     <div key={index++}>
                     <Cards created_at={item.created_at} action={()=>deleteProject(item.id)} imageUrl={item.image_url !== '' ? item.image_url : `https://www.gynprog.com.br/wp-content/uploads/2017/06/wood-blog-placeholder.jpg`} repoUrl={item.repo_url} projectUrl={item.project_url} title={item.title} description={item.description}/>
                     <div className={`${open ? "brightness-50" : ""} flex gap-3 bg-white rounded-lg justify-center shadow-xl`}>
                     {item.tech_stack_project.map((item)=>{
                     return(
-                        <div className={`rounded-lg`} key={item.tech_stacks.id}>
-                        <img width={80} height={80} className='rounded-lg p-3 text-black' src={item.tech_stacks.icon_url} alt={item.tech_stacks.name}/>
+                        <div className={`rounded-lg`} key={item.tech_stacks?.id}>
+                        <img width={80} height={80} className='rounded-lg p-3 text-black' src={item.tech_stacks?.icon_url} alt={item.tech_stacks?.name}/>
                         </div>
                     )    
                     })}

@@ -28,7 +28,7 @@ export default function Home() {
    <div>
 
     <div>
-     <h1 className="text-slate-950 text-5xl my-3 border-b mx-3 text-center md:text-start font-bold">Technical Skill</h1>
+     <h1 className="text-gray-300 text-5xl my-3 border-b mx-3 text-center md:text-start font-bold">Technical Skill</h1>
     <div className="p-2 bg-white my-2 flex justify-center">
      <TechStackPractice/>
     </div>
@@ -37,7 +37,7 @@ export default function Home() {
   
    { token && <Button/>}
    <div className="my-8">
-   <h1 className="text-slate-950 text-5xl my-3 border-b mx-3 text-center md:text-start font-bold">Projects</h1>
+   <h1 className="text-gray-300 text-5xl my-3 border-b mx-3 text-center md:text-start font-bold">Projects</h1>
    <div className="mt-10 h-xl overflow-y-auto grid grid-cols-1 mx-auto justify-items-center md:grid-cols-3">
     <ShowCardsProjects/>
     
